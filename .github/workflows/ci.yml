@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -46,5 +47,16 @@ jobs:
           role-to-assume: arn:aws:iam::033026138018:role/GitHubActions-ECSPractice
           aws-region: us-east-1
 
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Build Docker image
         run: docker build -t ecs-practice:latest .
+
+      - name: Tag Docker image
+        run: |
+          docker tag ecs-practice:latest 033026138018.dkr.ecr.us-east-1.amazonaws.com/ecs-practice:latest
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push 033026138018.dkr.ecr.us-east-1.amazonaws.com/ecs-practice:latest
